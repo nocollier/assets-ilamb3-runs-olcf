@@ -1,0 +1,14 @@
+[project]
+name = "assets-ilamb3-runs-olcf"
+version = "0.1.0"
+description = "Assets for running land and ocean comparisons for ilamb3"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ilamb3",
+    "intake-esgf>=2025.10.22",
+    "mpi4py>=4.1.1",
+]
+
+[tool.uv.sources]
+ilamb3 = { path = "../../../../../../ccs/home/nate/ilamb3", editable = true }
