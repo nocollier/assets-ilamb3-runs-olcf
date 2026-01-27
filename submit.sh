@@ -5,18 +5,23 @@
 #SBATCH --nodes=4
 #SBATCH --output=%x.log
 
-# Setup
+# Setup: This makes sure that we have pointers to where the reference
+# data is stored as well as the root of the model data. Finally we
+# make sure the environment is activated and ready to go.
 export ILAMB_ROOT=/lustre/orion/cli137/world-shared/ilamb3-data
 export ESGF_ROOT=/lustre/orion/cli137/world-shared/ESGF-data
 cd $SLURM_SUBMIT_DIR
 source $SLURM_SUBMIT_DIR/.venv/bin/activate
 
-# Some functions in xarray are not threadsafe (like sel) and cause strange problems
+# Mysterious incantations: Some functions in xarray are not threadsafe
+# (like sel) and cause strange problems. h/t Min Xu
 export HDF5_USE_FILE_LOCKING=FALSE
 export NETCDF4_DISABLE_PTHREADS=1
 export OMP_NUM_THREADS=1
 
-# Join the individual files with model data
+# Join the individual files model data CSV files. You could comment
+# out any file if you wanted to exclude it from a run. Add more CSV's
+# (generated with get_model_data.py) to run more models.
 model_files=("_dbase/ACCESS-ESM1-5.csv" \
 "_dbase/CanESM5.csv" \
 "_dbase/CESM2.csv" \
@@ -34,19 +39,19 @@ model_files=("_dbase/ACCESS-ESM1-5.csv" \
 IFS=','
 models="${model_files[*]}"
 
-# Land
-#srun -n 16 --cpu-bind=cores --distribution=cyclic python -m mpi4py.futures \
-#$SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
-#/ccs/home/nate/ilamb3/ilamb3/configure/ilamb.yaml \
-#--df-comparison "$models" \
-#--region-sources regions/GlobalLand.nc \
-#--regions global \
-#--global-region global \
-#--output-path _build/Land \
-#--cache \
-#--title "ILAMB historical"
+# Land run
+srun -n 16 --cpu-bind=cores --distribution=cyclic python -m mpi4py.futures \
+$SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
+/ccs/home/nate/ilamb3/ilamb3/configure/ilamb.yaml \
+--df-comparison "$models" \
+--region-sources regions/GlobalLand.nc \
+--regions global \
+--global-region global \
+--output-path _build/Land \
+--cache \
+--title "ILAMB historical"
 
-# Ocean
+# Ocean run
 srun -n 16 --cpu-bind=cores --distribution=cyclic python -m mpi4py.futures \
 $SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
 /ccs/home/nate/ilamb3/ilamb3/configure/iomb.yaml \
