@@ -19,34 +19,24 @@ export HDF5_USE_FILE_LOCKING=FALSE
 export NETCDF4_DISABLE_PTHREADS=1
 export OMP_NUM_THREADS=1
 
-# Join the individual files model data CSV files. You could comment
-# out any file if you wanted to exclude it from a run. Add more CSV's
-# (generated with get_model_data.py) to run more models.
-model_files=("_dbase/ACCESS-ESM1-5.csv" \
-"_dbase/CanESM5.csv" \
-"_dbase/CESM2.csv" \
-"_dbase/CMCC-ESM2.csv" \
-"_dbase/EC-Earth3-Veg.csv" \
-"_dbase/GFDL-ESM4.csv" \
-"_dbase/IPSL-CM6A-LR.csv" \
-"_dbase/MIROC-ES2L.csv" \
-"_dbase/MPI-ESM1-2-LR.csv" \
-"_dbase/MRI-ESM2-0.csv" \
-"_dbase/NorESM2-LM.csv" \
-"_dbase/SAM0-UNICON.csv" \
-"_dbase/TaiESM1.csv" \
-"_dbase/UKESM1-0-LL.csv")
-IFS=','
-models="${model_files[*]}"
-
 # Land run
 srun -n 16 --cpu-bind=cores --distribution=cyclic python -m mpi4py.futures \
 $SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
-/ccs/home/nate/ilamb3/ilamb3/configure/ilamb.yaml \
---df-comparison "$models" \
---region-sources regions/GlobalLand.nc \
---regions global \
---global-region global \
+.venv/lib/python3.12/site-packages/ilamb3/configure/ilamb.yaml \
+--model-db _land/BCC-ESM1.csv \
+--model-db _land/CanESM5.csv \
+--model-db _land/CESM2.csv \
+--model-db _land/E3SM-1-1.csv \
+--model-db _land/EC-Earth3-Veg.csv \
+--model-db _land/GFDL-ESM4.csv \
+--model-db _land/GISS-E2-1-G.csv \
+--model-db _land/IPSL-CM6A-LR.csv \
+--model-db _land/MIROC-ES2L.csv \
+--model-db _land/MPI-ESM1-2-LR.csv \
+--model-db _land/UKESM1-0-LL.csv \
+--region-source regions/GlobalLand.nc \
+--region global \
+--main-region global \
 --output-path _build/Land \
 --cache \
 --title "ILAMB historical"
@@ -55,7 +45,7 @@ $SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
 srun -n 16 --cpu-bind=cores --distribution=cyclic python -m mpi4py.futures \
 $SLURM_SUBMIT_DIR/.venv/bin/ilamb run \
 /ccs/home/nate/ilamb3/ilamb3/configure/iomb.yaml \
---df-comparison "$models" \
+--model-db _ocean/CanESM5.csv \
 --output-path _build/Ocean \
 --cache \
 --central-longitude -155.0 \
