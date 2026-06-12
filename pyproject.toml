@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "ilamb3",
-    "intake-esgf>=2025.10.22",
+    "intake-esgf>=2025.6.4",
     "mpi4py>=4.1.1",
 ]
 
