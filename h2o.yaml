@@ -1,0 +1,121 @@
+Mean State:
+  Precipitation:
+    GPCPv2.3:
+      sources:
+        pr: pr/GPCPv2.3/pr.nc
+      analyses:
+        - bias
+        - rmse
+        - cycle
+        - spatial_distribution
+        - dispersion
+      seasons: [DJF, MAM, JJA, SON]
+      table_unit: mm d-1
+      plot_unit: mm d-1
+      variable_cmap: Blues
+
+  Temperature:
+    CRU4.02:
+      sources:
+        tas: tas/CRU4.02/tas.nc
+      analyses:
+        - bias
+        - rmse
+        - cycle
+        - spatial_distribution
+        - dispersion
+      seasons: [DJF, MAM, JJA, SON]
+      variable_cmap: cool
+
+  Diurnal Minimum Temperature:
+    CRU4.02:
+      sources:
+        tasmin: tasmin/CRU4.02/tasmin.nc
+      analyses:
+        - bias
+        - rmse
+        - cycle
+        - spatial_distribution
+        - dispersion
+      seasons: [DJF, MAM, JJA, SON]
+      variable_cmap: cool
+
+  Diurnal Maximum Temperature:
+    CRU4.02:
+      sources:
+        tasmax: tasmax/CRU4.02/tasmax.nc
+      analyses:
+        - bias
+        - rmse
+        - cycle
+        - spatial_distribution
+        - dispersion
+      seasons: [DJF, MAM, JJA, SON]
+      variable_cmap: cool
+
+  Diurnal Temperature Range:
+    CRU4.02:
+      analysis_variable: dtr
+      sources:
+        tasmin: tasmin/CRU4.02/tasmin.nc
+        tasmax: tasmax/CRU4.02/tasmax.nc
+      transforms:
+        - expression:
+            expr: "dtr = tasmax - tasmin"
+      analyses:
+        - bias
+        - rmse
+        - spatial_distribution
+      seasons: [DJF, MAM, JJA, SON]
+      variable_cmap: cool
+
+Extremes:
+  Wet Days:
+    Daymet-4-1:
+      analysis_variable: wet_days
+      sources:
+        prcp: /lustre/orion/cli138/world-shared/deeksha/ILAMB-Hydro/Data/Reference/DaymetV4/prcp/DaymetV4_VIC4*.nc
+      transforms:
+        - rename:
+            prcp: pr
+        - count_wet_days
+
+  Summer Days:
+    Daymet-4-1:
+      analysis_variable: summer_days
+      sources:
+        tmax: /lustre/orion/cli138/world-shared/deeksha/ILAMB-Hydro/Data/Reference/DaymetV4/tmax/DaymetV4_VIC4*.nc
+      transforms:
+        - rename:
+            tmax: tasmax
+        - count_summer_days
+
+  Ice Days:
+    Daymet-4-1:
+      analysis_variable: ice_days
+      sources:
+        tmax: /lustre/orion/cli138/world-shared/deeksha/ILAMB-Hydro/Data/Reference/DaymetV4/tmax/DaymetV4_VIC4*.nc
+      transforms:
+        - rename:
+            tmax: tasmax
+        - count_ice_days
+
+  Tropical Nights:
+    Daymet-4-1:
+      analysis_variable: tropical_nights
+      sources:
+        tmin: /lustre/orion/cli138/world-shared/deeksha/ILAMB-Hydro/Data/Reference/DaymetV4/tmin/DaymetV4_VIC4*.nc
+      transforms:
+        - rename:
+            tmin: tasmin
+        - count_tropical_nights
+
+  Frost Days:
+    Daymet-4-1:
+      analysis_variable: frost_days
+      sources:
+        tmin: /lustre/orion/cli138/world-shared/deeksha/ILAMB-Hydro/Data/Reference/DaymetV4/tmin/DaymetV4_VIC4*.nc
+      transforms:
+        - rename:
+            tmin: tasmin
+        - count_frost_days
